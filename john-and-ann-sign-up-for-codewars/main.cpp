@@ -42,38 +42,81 @@ class Johnann {
 	static std::vector<long long> total_john;
 	static std::vector<long long> total_ann;
 
+	static void init_data() {
+		if (!total_john.empty() && !total_ann.empty()) {
+			return;
+		}
+
+		total_john.push_back(0);
+		total_ann.push_back(1);
+	};
+
 	static std::vector<long long> get_current_john_progress(long long n) {
+		init_data();
+
 		if (total_john.size() >= n) {
 			std::vector<long long> result_vec(total_john.begin(), total_john.begin() + n);
 		
 			return result_vec;
 		}
+
+		for (int i = total_john.size(); i < n; i++) {
+			long long new_number_for_ann = n - total_john[total_ann[n - 1]];
+			total_ann.push_back(new_number_for_ann);
+
+
+			long long new_number_for_john = n - total_ann[total_john[n - 1]];
+			total_john.push_back(new_number_for_john);
+		}
+
+		std::vector<long long> result_vec(total_john.begin(), total_john.begin() + n);
 		
-		std::vector<long long> result_vec;
+			for (auto &&i : total_john) {
+			std::cout << "john i: " << i << std::endl;
+		}
+
+		for (auto &&i : total_ann) {
+			std::cout << "ann i: " << i << std::endl;
+		}
 
 		return result_vec;
 	};
 
 	static std::vector<long long> get_current_ann_progress(long long n) {
+		init_data();
+		
 		if (total_ann.size() >= n) {
 			std::vector<long long> result_vec(total_ann.begin(), total_ann.begin() + n);
 			
 			return result_vec;
 		}
 		
-		std::vector<long long> result_vec;
+		for (int i = total_ann.size(); i < n; i++) {
+			long long new_number_for_john = n - total_ann[total_john[n - 1]];
+			total_john.push_back(new_number_for_john);
+
+
+			long long new_number_for_ann = n - total_john[total_ann[n - 1]];
+			total_ann.push_back(new_number_for_ann);
+		}
+
+		std::vector<long long> result_vec(total_ann.begin(), total_ann.begin() + n);
 		
 		return result_vec;
 	};
 
 	static long long get_current_sum_of_john(long long n) {
-		long long result = std::accumulate(total_john.begin(), total_john.begin() + n + 1, 0);
+		init_data();
 		
+		long long result = std::accumulate(total_john.begin(), total_john.begin() + n, 0);
+
 		return result;
 	}
 
 	static long long get_current_sum_of_ann(long long n) {
-		long long result = std::accumulate(total_ann.begin(), total_ann.begin() + n + 1, 0);
+		init_data();
+
+		long long result = std::accumulate(total_ann.begin(), total_ann.begin() + n, 0);
 		
 		return result;
 	}
@@ -100,6 +143,7 @@ std::vector<long long> Johnann::total_john;
 std::vector<long long> Johnann::total_ann;
 
 int main() {
+	Johnann::john(2);
 	// TODO:
 	// std::cout << Johnann::john(11) << " --> [0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6]" << std::endl;
 	// std::cout << Johnann::ann(6) << " --> [1, 1, 2, 2, 3, 3]" << std::endl;
